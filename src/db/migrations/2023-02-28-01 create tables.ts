@@ -5,10 +5,10 @@ export async function up (db: Kysely<any>): Promise<void> {
     .createTable('player')
     .addColumn('discord_id', 'bigint', (col) => col.unique().primaryKey())
     .addColumn('balance', 'integer', (col) => col.defaultTo(0).notNull())
-    .addColumn('last_daily', 'datetime', (col) =>
+    .addColumn('last_daily', 'timestamp', (col) =>
       col.defaultTo(new Date(0)).notNull()
     )
-    .addColumn('daily_streak', 'datetime', (col) => col.defaultTo(0).notNull())
+    .addColumn('daily_streak', 'integer', (col) => col.defaultTo(0).notNull())
     .execute()
 
   await db.schema
@@ -30,8 +30,8 @@ export async function up (db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('event')
     .addColumn('id', 'serial', (col) => col.primaryKey())
-    .addColumn('start_time', 'datetime')
-    .addColumn('end_time', 'datetime')
+    .addColumn('start_time', 'timestamp')
+    .addColumn('end_time', 'timestamp')
     .execute()
 
   await db.schema
@@ -43,7 +43,7 @@ export async function up (db: Kysely<any>): Promise<void> {
       col.references('card.card_id').onDelete('cascade')
     )
     .addColumn('amount', 'integer', (col) => col.defaultTo(1).notNull())
-    .addColumn('date_owned', 'datetime', (col) =>
+    .addColumn('date_owned', 'timestamp', (col) =>
       col.defaultTo(sql`CURRENT_DATE`).notNull()
     )
     .addPrimaryKeyConstraint('player_has_card_pkey', ['discord_id', 'card_id'])
