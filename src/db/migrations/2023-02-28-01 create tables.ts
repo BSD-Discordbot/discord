@@ -32,6 +32,8 @@ export async function up (db: Kysely<any>): Promise<void> {
     .addColumn('id', 'serial', (col) => col.primaryKey())
     .addColumn('start_time', 'timestamp')
     .addColumn('end_time', 'timestamp')
+    .addColumn('name', 'varchar')
+    .addColumn('default', 'boolean', (col) => col.defaultTo(false).notNull())
     .execute()
 
   await db.schema
