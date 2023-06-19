@@ -7,7 +7,7 @@ interface Player {
   daily_streak: number
 }
 
-interface PlayerHasCards {
+interface PlayerHasCard {
   discord_id: bigint
   card_id: number
   amount: number
@@ -17,8 +17,6 @@ interface PlayerHasCards {
 interface Card {
   card_id: number
   rarity: number
-  description: string
-  name: string
 }
 
 interface CardUpgrade {
@@ -28,22 +26,24 @@ interface CardUpgrade {
 
 interface Event {
   id: Generated<number>
-  start_time: number
-  end_time: number
+  start_time?: number
+  end_time?: number
+  name: string
+  default: boolean
 }
 
-interface EventHasCards {
-  event_id: bigint
+interface EventHasCard {
+  event_id: number
   card_id: number
 }
 
 interface Database {
   player: Player
-  player_has_cards: PlayerHasCards
+  player_has_card: PlayerHasCard
   card: Card
   card_upgrade: CardUpgrade
   event: Event
-  event_has_cards: EventHasCards
+  event_has_card: EventHasCard
 }
 
 export default Database
