@@ -49,31 +49,49 @@ for (const file of commandFiles) {
   )
 }
 
-// Handle slash commands
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return
+  // Handle slash commands
+  if (interaction.isChatInputCommand()) {
+    const command = interaction.client.commands.get(interaction.commandName)
 
-  const command = interaction.client.commands.get(interaction.commandName)
+    if (command === undefined) {
+      console.error(`No command matching ${interaction.commandName} was found.`)
+      return
+    }
 
-  if (command === undefined) {
-    console.error(`No command matching ${interaction.commandName} was found.`)
-    return
-  }
+    try {
+      await command.execute(interaction)
+    } catch (error) {
+      console.trace(error)
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp({
+          content: 'Il y a eu une erreur durant l\'exécution de cette commande!',
+          ephemeral: true
+        }).catch(e => {})
+      } else {
+        await interaction.reply({
+          content: 'Il y a eu une erreur durant l\'exécution de cette commande!',
+          ephemeral: true
+        }).catch(e => {})
+      }
+    }
+  } else if (interaction.isAutocomplete()) {
+    const command = interaction.client.commands.get(interaction.commandName)
 
-  try {
-    await command.execute(interaction)
-  } catch (error) {
-    console.trace(error)
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: 'Il y a eu une erreur durant l\'exécution de cette commande!',
-        ephemeral: true
-      }).catch(e => {})
-    } else {
-      await interaction.reply({
-        content: 'Il y a eu une erreur durant l\'exécution de cette commande!',
-        ephemeral: true
-      }).catch(e => {})
+    if (!command) {
+      console.error(`No command matching ${interaction.commandName} was found.`)
+      return
+    }
+
+    if (!command.autocomplete) {
+      console.error(`Command ${interaction.commandName} has no autocompletion handler`)
+      return
+    }
+
+    try {
+      await command.autocomplete(interaction)
+    } catch (error) {
+      console.error(error)
     }
   }
 })
