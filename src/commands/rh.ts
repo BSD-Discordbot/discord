@@ -1,4 +1,4 @@
-import { checkBalance, dailyReward } from '../db/utils'
+import { checkBalance, weeklyReward } from '../db/utils'
 import {
   type CommandInteraction,
   SlashCommandBuilder,
@@ -8,8 +8,8 @@ import {
 module.exports = {
   global: false,
   data: new SlashCommandBuilder()
-    .setName('rj')
-    .setDescription('Récupère ta récompense journalière'),
+    .setName('rh')
+    .setDescription('Récupère ta récompense hebdomadaire'),
   async execute (interaction: CommandInteraction) {
     if (interaction.guild === null) {
       throw new Error('guild is null')
@@ -18,16 +18,17 @@ module.exports = {
       throw new Error('member is null')
     }
     const userId = BigInt(interaction.user.id)
-    const { last_daily: last_daily_check } = await checkBalance(userId)
+    const { daily_streak: daily_streak_check } = await checkBalance(userId)
 
-    if (last_daily_check.getTime() >= (new Date()).setHours(0)) {
+    if (daily_streak_check < 7) {
       const statusUpdate = new EmbedBuilder()
         .setColor(0xff5555)
-        .setTitle(`La récompense journalière a déjà été récuperée <t:${Math.floor(last_daily_check.getTime() / 1000)}:R>`)
+        .setTitle('Impossible de récupérer la récompense hedbomadaire : un combo minimum de 7 est nécessaire')
+        .addFields({ name: 'Combo journalier', value: daily_streak_check.toString(), inline: true })
       await interaction.reply({ embeds: [statusUpdate], ephemeral: true })
       return
     }
-    await dailyReward(userId)
+    await weeklyReward(userId)
     const { balance, last_daily, daily_streak } = await checkBalance(userId)
     const statusUpdate = new EmbedBuilder()
       .setColor(0x0099ff)
@@ -36,7 +37,7 @@ module.exports = {
       .addFields({ name: 'Montant', value: balance.toString() })
       .addFields({ name: 'Dernière récompense récuperée', value: `<t:${Math.floor(last_daily.getTime() / 1000)}:R>`, inline: true })
       .addFields({ name: 'Combo journalier', value: daily_streak.toString(), inline: true })
-      .setFooter({ text: 'Récompense journalière récuperée!' })
+      .setFooter({ text: 'Récompense hebdomadaire récuperée!' })
 
     await interaction.reply({ embeds: [statusUpdate], ephemeral: true })
   }
