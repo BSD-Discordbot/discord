@@ -1,3 +1,4 @@
+import { showCards } from '../canvasUtils'
 import db from '../db'
 import { checkBalance, pull, withdrawMoney } from '../db/utils'
 import {
@@ -66,17 +67,9 @@ module.exports = {
     const cards = await pull(userId, event)
 
     await withdrawMoney(userId, 200)
-    const { balance } = await checkBalance(userId)
-    const statusUpdate = new EmbedBuilder()
-      .setColor(0x0099ff)
-      .setAuthor({
-        name: interaction.user.username,
-        iconURL: interaction.user.avatarURL() ?? undefined
-      })
-      .addFields({ name: 'Cartes', value: cards.toString() })
-      .addFields({ name: 'Porte monnaie', value: balance.toString() })
-      .setFooter({ text: 'Cartes tirées!' })
 
-    await interaction.reply({ embeds: [statusUpdate], ephemeral: true })
+    const image = await showCards(cards)
+
+    await interaction.reply({ files: [{ attachment: image }], ephemeral: true })
   }
 }
