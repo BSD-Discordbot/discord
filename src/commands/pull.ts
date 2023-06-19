@@ -70,6 +70,6 @@ module.exports = {
 
     const image = await showCards(cards)
 
-    await interaction.reply({ files: [{ attachment: image }], ephemeral: true })
+    await interaction.reply({ files: [{ attachment: image }] })
   }
 }
