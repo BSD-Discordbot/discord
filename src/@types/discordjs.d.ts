@@ -1,6 +1,7 @@
 export interface SlashCommand {
   data: SlashCommandBuilder
   execute: (interaction: CommandInteraction) => Promise<void>
+  autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>
 }
 
 declare module 'discord.js' {
