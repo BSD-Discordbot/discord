@@ -11,6 +11,7 @@ module.exports = {
     project: ['./tsconfig.json'] // Specify it only for TypeScript files
   },
   rules: {
-    '@typescript-eslint/strict-boolean-expressions': 0
+    '@typescript-eslint/strict-boolean-expressions': 0,
+    '@typescript-eslint/naming-convention': 0
   }
 }
