@@ -1,12 +1,12 @@
-# Goobot
-This discord bot reads images sent into a channel
+# BSD-discord
 
-Then provides a /goob command to send a random image among the list of previously recorded images
 
 # Installations instructions
+
+You muse have a [postgres](https://www.postgresql.org/) server installed
 ```bash
-git clone https://github.com/Legonzaur/goobot
-cd goobot
+git clone https://github.com/Legonzaur/bsd-discordbot
+cd bsd-discordbot
 cp ./src/config.json.example ./src/config.json
 ```
 
